@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Comparison Engine - Compare Tools & Pricing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --color-primary: #2158d0;
+            --color-primary-hover: #1a4a9e;
+            --color-success: #2f9d4f;
+            --color-error: #c0152f;
+            --color-bg: #fcfcf9;
+            --color-surface: #ffffff;
+            --color-border: #d5d2c5;
+            --color-text: #134252;
+            --color-text-secondary: #626c71;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Score badges */
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .score-9, .score-10 {
+            background: rgba(47, 157, 79, 0.15);
+            color: var(--color-success);
+            border: 2px solid var(--color-success);
+        }
+
+        .score-7, .score-8 {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+        }
+
+        .score-5, .score-6 {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 2px solid #f59e0b;
+        }
+
+        .score-3, .score-4 {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--color-error);
+            border: 2px solid var(--color-error);
+        }
+
+        /* Feature checkmark styles */
+        .feature-check {
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .feature-x {
+            color: #cbd5e1;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* Responsive table */
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        .comparison-table {
+            min-width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+        }
+
+        .comparison-table td {
+            padding: 14px 16px;
+            border: 1px solid var(--color-border);
+            font-size: 14px;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: rgba(33, 88, 208, 0.03);
+        }
+
+        /* Price highlight */
+        .price-cell {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 15px;
+        }
+
+        /* Tool header card */
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 150px;
+        }
+
+        .tool-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Category badges */
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .category-collaboration {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .category-productivity {
+            background: rgba(168, 75, 47, 0.1);
+            color: #a84b2f;
+        }
+
+        .category-analytics {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        /* Loading animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .loading-skeleton {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+        }
+
+        /* Search input custom styling */
+        .search-input {
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(33, 88, 208, 0.1);
+        }
+
+        /* Button styles */
+        .btn {
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(33, 88, 208, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(33, 88, 208, 0.1);
+            color: var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(33, 88, 208, 0.2);
+        }
+
+        .btn-secondary.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        // ==================== DATA ====================
+        const saasData = [
+            {
+                id: 1,
+                name: 'Slack',
+                category: 'Collaboration',
+                logo: 'SL',
+                logoColor: '#E01E5A',
+                price: '$6.25/user',
+                priceNum: 6.25,
+                url: 'https://slack.com',
+                score: 9,
+                features: {
+                    'Free Plan': true,
+                    'Unlimited Message History': false,
+                    'Integrations (1000+)': true,
+                    'Video Conferencing': true,
+                    'SSO/SAML': false,
+                    'Mobile App': true,
+                    'Desktop App': true,
+                    'Threads': true,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            },
+            {
+                id: 2,
+                name: 'Microsoft Teams',
+                category: 'Collaboration',
+                logo: 'MT',
+                logoColor: '#6264A7',
+                price: '$4/user',
+                priceNum: 4,
+                url: 'https://teams.microsoft.com',
+                score: 8,
+                features: {
+                    'Free Plan': true,
+                    'Unlimited Message History': true,
+                    'Integrations (1000+)': false,
+                    'Video Conferencing': true,
+                    'SSO/SAML': true,
+                    'Mobile App': true,
+                    'Desktop App': true,
+                    'Threads': true,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            },
+            {
+                id: 3,
+                name: 'Notion',
+                category: 'Productivity',
+                logo: 'NO',
+                logoColor: '#000000',
+                price: '$8/user',
+                priceNum: 8,
+                url: 'https://notion.so',
+                score: 8,
+                features: {
+                    'Free Plan': true,
+                    'Unlimited Message History': true,
+                    'Integrations (1000+)': true,
+                    'Video Conferencing': false,
+                    'SSO/SAML': false,
+                    'Mobile App': true,
+                    'Desktop App': true,
+                    'Threads': false,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            },
+            {
+                id: 4,
+                name: 'Asana',
+                category: 'Productivity',
+                logo: 'AS',
+                logoColor: '#F26221',
+                price: '$10.99/user',
+                priceNum: 10.99,
+                url: 'https://asana.com',
+                score: 9,
+                features: {
+                    'Free Plan': true,
+                    'Unlimited Message History': true,
+                    'Integrations (1000+)': true,
+                    'Video Conferencing': false,
+                    'SSO/SAML': false,
+                    'Mobile App': true,
+                    'Desktop App': true,
+                    'Threads': false,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            },
+            {
+                id: 5,
+                name: 'Monday.com',
+                category: 'Productivity',
+                logo: 'MD',
+                logoColor: '#FF6B35',
+                price: '$7/user',
+                priceNum: 7,
+                url: 'https://monday.com',
+                score: 8,
+                features: {
+                    'Free Plan': true,
+                    'Unlimited Message History': true,
+                    'Integrations (1000+)': true,
+                    'Video Conferencing': false,
+                    'SSO/SAML': false,
+                    'Mobile App': true,
+                    'Desktop App': true,
+                    'Threads': false,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            },
+            {
+                id: 6,
+                name: 'Jira',
+                category: 'Development',
+                logo: 'JR',
+                logoColor: '#0052CC',
+                price: '$7.25/user',
+                priceNum: 7.25,
+                url: 'https://jira.atlassian.com',
+                score: 9,
+                features: {
+                    'Free Plan': true,
+                    'Unlimited Message History': true,
+                    'Integrations (1000+)': true,
+                    'Video Conferencing': false,
+                    'SSO/SAML': true,
+                    'Mobile App': true,
+                    'Desktop App': false,
+                    'Threads': false,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            },
+            {
+                id: 7,
+                name: 'GitHub',
+                category: 'Development',
+                logo: 'GH',
+                logoColor: '#1f6feb',
+                price: '$4/user',
+                priceNum: 4,
+                url: 'https://github.com',
+                score: 10,
+                features: {
+                    'Free Plan': true,
+                    'Unlimited Message History': true,
+                    'Integrations (1000+)': true,
+                    'Video Conferencing': false,
+                    'SSO/SAML': true,
+                    'Mobile App': true,
+                    'Desktop App': false,
+                    'Threads': true,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            },
+            {
+                id: 8,
+                name: 'Zendesk',
+                category: 'Support',
+                logo: 'ZD',
+                logoColor: '#03363D',
+                price: '$19/user',
+                priceNum: 19,
+                url: 'https://zendesk.com',
+                score: 8,
+                features: {
+                    'Free Plan': false,
+                    'Unlimited Message History': true,
+                    'Integrations (1000+)': true,
+                    'Video Conferencing': false,
+                    'SSO/SAML': true,
+                    'Mobile App': true,
+                    'Desktop App': true,
+                    'Threads': true,
+                    'Workflow Automation': true,
+                    'API Access': true
+                }
+            }
+        ];
+
+        const allFeatures = [
+            'Free Plan',
+            'Unlimited Message History',
+            'Integrations (1000+)',
+            'Video Conferencing',
+            'SSO/SAML',
+            'Mobile App',
+            'Desktop App',
+            'Threads',
+            'Workflow Automation',
+            'API Access'
+        ];
+
+        const categories = ['All', 'Collaboration', 'Productivity', 'Development', 'Support'];
+
+        // ==================== STATE ====================
+        let state = {
+            selectedTools: [1, 2, 3, 4],
+            selectedCategory: 'All',
+            searchQuery: '',
+            sortBy: 'name',
+            visibleFeatures: allFeatures
+        };
+
+        // ==================== UTILITIES ====================
+        function getScoreColor(score) {
+            if (score >= 9) return 'score-9';
+            if (score >= 7) return 'score-7';
+            if (score >= 5) return 'score-5';
+            return 'score-3';
+        }
+
+        function toggleToolSelection(toolId) {
+            const index = state.selectedTools.indexOf(toolId);
+            if (index > -1) {
+                if (state.selectedTools.length > 1) {
+                    state.selectedTools.splice(index, 1);
+                }
+            } else {
+                state.selectedTools.push(toolId);
+            }
+            render();
+        }
+
+        function setCategory(category) {
+            state.selectedCategory = category;
+            render();
+        }
+
+        function setSortBy(sortType) {
+            state.sortBy = sortType;
+            render();
+        }
+
+        function setSearchQuery(query) {
+            state.searchQuery = query.toLowerCase();
+            render();
+        }
+
+        function getFilteredTools() {
+            let filtered = saasData;
+
+            // Category filter
+            if (state.selectedCategory !== 'All') {
+                filtered = filtered.filter(tool => tool.category === state.selectedCategory);
+            }
+
+            // Search filter
+            if (state.searchQuery) {
+                filtered = filtered.filter(tool => 
+                    tool.name.toLowerCase().includes(state.searchQuery) ||
+                    tool.category.toLowerCase().includes(state.searchQuery)
+                );
+            }
+
+            // Sort
+            if (state.sortBy === 'price-low') {
+                filtered.sort((a, b) => a.priceNum - b.priceNum);
+            } else if (state.sortBy === 'price-high') {
+                filtered.sort((a, b) => b.priceNum - a.priceNum);
+            } else if (state.sortBy === 'score') {
+                filtered.sort((a, b) => b.score - a.score);
+            }
+
+            return filtered;
+        }
+
+        function renderHeader() {
+            return `
+                <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+                    <div class="max-w-7xl mx-auto px-6 py-8">
+                        <div class="mb-8">
+                            <h1 class="text-4xl font-bold text-gray-900 mb-2">SaaS Comparison Engine</h1>
+                            <p class="text-gray-600">Compare features, pricing, and ratings of popular SaaS tools</p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Search & Filters Row -->
+                            <div class="flex flex-col md:flex-row gap-4">
+                                <div class="flex-1">
+                                    <input 
+                                        type="text" 
+                                        class="search-input w-full"
+                                        placeholder="Search by tool name or category..."
+                                        onkeyup="setSearchQuery(this.value)"
+                                    />
+                                </div>
+                                <select class="search-input" onchange="setSortBy(this.value)">
+                                    <option value="name">Sort by Name</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="score">Rating: High to Low</option>
+                                </select>
+                            </div>
+
+                            <!-- Category Filter -->
+                            <div>
+                                <p class="text-sm font-semibold text-gray-700 mb-3">Category:</p>
+                                <div class="flex flex-wrap gap-2">
+                                    ${categories.map(cat => `
+                                        <button 
+                                            class="btn ${state.selectedCategory === cat ? 'btn-primary' : 'btn-secondary'}"
+                                            onclick="setCategory('${cat}')"
+                                        >
+                                            ${cat}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            `;
+        }
+
+        function renderToolSelector() {
+            const allTools = state.selectedCategory === 'All' 
+                ? saasData 
+                : saasData.filter(t => t.category === state.selectedCategory);
+            
+            const filtered = getFilteredTools();
+
+            return `
+                <div class="max-w-7xl mx-auto px-6 py-6">
+                    <div class="bg-white rounded-lg border border-gray-200 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Select Tools to Compare</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            ${filtered.map(tool => `
+                                <button 
+                                    class="p-4 border-2 rounded-lg transition cursor-pointer ${
+                                        state.selectedTools.includes(tool.id)
+                                            ? 'border-blue-500 bg-blue-50'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    }"
+                                    onclick="toggleToolSelection(${tool.id})"
+                                >
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <div class="w-8 h-8 rounded flex items-center justify-center text-white text-xs font-bold" style="background-color: ${tool.logoColor}">
+                                            ${tool.logo}
+                                        </div>
+                                        <span class="font-semibold text-sm text-gray-900">${tool.name}</span>
+                                    </div>
+                                    <div class="text-xs text-gray-600">${tool.category}</div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderComparisonTable() {
+            const selectedToolsData = saasData.filter(t => state.selectedTools.includes(t.id));
+
+            if (selectedToolsData.length === 0) {
+                return '<div class="max-w-7xl mx-auto px-6 py-12 text-center text-gray-500">Select at least one tool to compare</div>';
+            }
+
+            return `
+                <div class="max-w-7xl mx-auto px-6 py-8">
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <!-- Quick Stats -->
+                        <div class="grid grid-cols-1 md:grid-cols-${selectedToolsData.length} gap-4 p-6 border-b border-gray-200">
+                            ${selectedToolsData.map(tool => `
+                                <div class="text-center p-4 rounded-lg bg-gray-50">
+                                    <div class="flex items-center justify-center gap-3 mb-3">
+                                        <div class="w-10 h-10 rounded flex items-center justify-center text-white font-bold text-sm" style="background-color: ${tool.logoColor}">
+                                            ${tool.logo}
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-900">${tool.name}</p>
+                                            <p class="text-xs text-gray-600">${tool.category}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-lg font-bold text-blue-600">${tool.price}</p>
+                                        <div class="flex items-center justify-center gap-2 mt-2">
+                                            <span class="score-badge ${getScoreColor(tool.score)}">${tool.score}</span>
+                                            <span class="text-xs text-gray-600">/10</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Features Table -->
+                        <div class="table-scroll">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th class="sticky left-0 z-10 bg-gray-50">Features</th>
+                                        ${selectedToolsData.map(tool => `
+                                            <th class="text-center w-24">
+                                                <a href="${tool.url}" target="_blank" rel="noopener" class="hover:text-blue-600 transition">
+                                                    ${tool.name}
+                                                </a>
+                                            </th>
+                                        `).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${allFeatures.map(feature => `
+                                        <tr>
+                                            <td class="font-medium text-gray-900 sticky left-0 z-10 bg-white">${feature}</td>
+                                            ${selectedToolsData.map(tool => `
+                                                <td class="text-center">
+                                                    ${tool.features[feature] 
+                                                        ? '<span class="feature-check">✓</span>' 
+                                                        : '<span class="feature-x">—</span>'
+                                                    }
+                                                </td>
+                                            `).join('')}
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFooter() {
+            return `
+                <footer class="bg-gray-900 text-white mt-16">
+                    <div class="max-w-7xl mx-auto px-6 py-12">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
+                            <div>
+                                <h3 class="font-semibold mb-4">About This Tool</h3>
+                                <p class="text-gray-400 text-sm">Compare SaaS tools by features, pricing, and ratings. Updated regularly with the latest information.</p>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-4">Popular Comparisons</h3>
+                                <ul class="text-gray-400 text-sm space-y-2">
+                                    <li><a href="#" class="hover:text-white">Slack vs Teams</a></li>
+                                    <li><a href="#" class="hover:text-white">Notion vs Asana</a></li>
+                                    <li><a href="#" class="hover:text-white">GitHub vs Jira</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-4">Disclaimer</h3>
+                                <p class="text-gray-400 text-sm">Pricing and features updated regularly. Verify with official sources before deciding.</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                            <p>&copy; 2025 SaaS Comparison Engine. Made with ❤️ for product teams.</p>
+                        </div>
+                    </div>
+                </footer>
+            `;
+        }
+
+        function render() {
+            document.getElementById('root').innerHTML = `
+                ${renderHeader()}
+                ${renderToolSelector()}
+                ${renderComparisonTable()}
+                ${renderFooter()}
+            `;
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
