@@ -916,20 +916,7 @@
             const searchInput = document.querySelector('.search-input');
             if (!searchInput) return;
             
-            searchInput.addEventListener('input', function(e) {
-                const query = e.target.value.toLowerCase();
-                if (query.length < 2) return;
-                
-                const suggestions = saasData
-                    .filter(tool => 
-                        tool.name.toLowerCase().includes(query) ||
-                        tool.category.toLowerCase().includes(query)
-                    )
-                    .slice(0, 5);
-                
-                // Aqui você poderia mostrar um dropdown
-                // ou usar autocomplete da browser
-            });
+            
         }
 
         function renderComparisonTable() {
@@ -1105,17 +1092,7 @@
             `;
         }
 
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.value = state.searchTerm || '';
-                
-                searchInput.addEventListener('input', (e) => {
-                    state.searchTerm = e.target.value;
-                    render();
-                });
-            }
-        }
+        
 
         function render() {
             document.getElementById('root').innerHTML = `
