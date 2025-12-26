@@ -1101,6 +1101,26 @@
             `;
         }
 
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = state.searchTerm || '';
+                
+                searchInput.addEventListener('input', (e) => {
+                    state.searchTerm = e.target.value;
+                    render();
+                    
+                    setTimeout(() => {
+                        const newInput = document.getElementById('searchInput');
+                        if (newInput) {
+                            newInput.value = state.searchTerm;
+                            newInput.focus();
+                        }
+                    }, 0);
+                });
+            }
+        }
+
         function render() {
             document.getElementById('root').innerHTML = `
                 ${renderHeader()}
@@ -1108,6 +1128,8 @@
                 ${renderComparisonTable()}
                 ${renderFooter()}
             `;
+
+            setupSearch();
         }
 
         // Initial render
