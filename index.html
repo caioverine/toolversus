@@ -1012,20 +1012,22 @@
                         </div>
     
                         <!-- Key Differences -->
-                        <div class="differences-section">
-                            <div class="differences-title">Key Differences</div>
+                        <div style="background: #f8f8f8; padding: 16px 20px; margin: 0 20px; border-radius: 8px; margin-bottom: 20px;">
+                            <div style="font-size: 12px; font-weight: 600; color: #2158d0; text-transform: uppercase; margin-bottom: 8px;">Key Differences</div>
                             ${selectedToolsData.length === 2 ? `
-                                <div class="difference-item">
-                                    Price: ${selectedToolsData?.name} is ${
-                                        selectedToolsData?.priceNum > selectedToolsData?.priceNum 
-                                        ? `${Math.round(((selectedToolsData?.priceNum - selectedToolsData?.priceNum) / selectedToolsData?.priceNum * 100))}% more expensive`
-                                        : `${Math.round(((selectedToolsData?.priceNum - selectedToolsData?.priceNum) / selectedToolsData?.priceNum * 100))}% cheaper`
+                                <div style="font-size: 13px; color: #3d4852; padding: 6px 0; display: flex; align-items: center;">
+                                    <span style="margin-right: 8px; color: #2158d0; font-weight: bold;">→</span>
+                                    Price: ${selectedToolsData[0].name} is ${
+                                        selectedToolsData[0].priceNum > selectedToolsData[1].priceNum 
+                                        ? `${Math.round(((selectedToolsData[0].priceNum - selectedToolsData[1].priceNum) / selectedToolsData[1].priceNum * 100))}% more expensive`
+                                        : `${Math.round(((selectedToolsData[1].priceNum - selectedToolsData[0].priceNum) / selectedToolsData[0].priceNum * 100))}% cheaper`
                                     }
                                 </div>
-                                <div class="difference-item">
-                                    Rating: ${selectedToolsData?.score > selectedToolsData?.score ? selectedToolsData?.name : selectedToolsData?.name} scores higher (${Math.max(selectedToolsData?.score, selectedToolsData?.score)}/10)
+                                <div style="font-size: 13px; color: #3d4852; padding: 6px 0; display: flex; align-items: center;">
+                                    <span style="margin-right: 8px; color: #2158d0; font-weight: bold;">→</span>
+                                    Rating: ${selectedToolsData[0].score > selectedToolsData[1].score ? selectedToolsData[0].name : selectedToolsData[1].name} scores higher (${Math.max(selectedToolsData[0].score, selectedToolsData[1].score)}/10)
                                 </div>
-                            ` : ''}
+                            ` : '<div style="color: #999; font-size: 13px;">Select 2 tools to see differences</div>'}
                         </div>
     
                         <!-- CTA to Blog -->
