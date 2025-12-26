@@ -789,16 +789,18 @@
                                 <div class="flex-1">
                                     <input 
                                         type="text" 
+                                        id="searchInput"
                                         class="search-input w-full"
                                         placeholder="Search by tool name or category..."
                                         onkeyup="setSearchQuery(this.value)"
+                                        value="${state.searchTerm || ''}"
                                     />
                                 </div>
-                                <select class="search-input" onchange="setSortBy(this.value)">
-                                    <option value="name">Sort by Name</option>
-                                    <option value="price-low">Price: Low to High</option>
-                                    <option value="price-high">Price: High to Low</option>
-                                    <option value="score">Rating: High to Low</option>
+                                <select id="sortSelect" value="${state.sortBy || 'name'}" class="search-input" onchange="setSortBy(this.value)">
+                                    <option value="name" ${state.sortBy === 'name' ? 'selected' : ''}>Sort by Name</option>
+                                    <option value="price-low" ${state.sortBy === 'price-low' ? 'selected' : ''}>Price: Low to High</option>
+                                    <option value="price-high" ${state.sortBy === 'price-high' ? 'selected' : ''}>Price: High to Low</option>
+                                    <option value="score" ${state.sortBy === 'score' ? 'selected' : ''}>Rating: High to Low</option>
                                 </select>
                             </div>
 
