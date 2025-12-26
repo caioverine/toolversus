@@ -712,6 +712,10 @@
         };
 
         // ==================== UTILITIES ====================
+        function handleSearch(value) {
+            state.searchTerm = value;
+            render();
+        }
         function getScoreColor(score) {
             if (score >= 9) return 'score-9';
             if (score >= 7) return 'score-7';
@@ -792,7 +796,7 @@
                                         id="searchInput"
                                         class="search-input w-full"
                                         placeholder="Search by tool name or category..."
-                                        onkeyup="setSearchQuery(this.value)"
+                                        oninput="handleSearch(this.value)"
                                         value="${state.searchTerm || ''}"
                                     />
                                 </div>
@@ -1120,8 +1124,6 @@
                 ${renderComparisonTable()}
                 ${renderFooter()}
             `;
-
-            setupSearch();
         }
 
         // Initial render
