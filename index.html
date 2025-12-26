@@ -356,6 +356,76 @@
             color: #626c71;
         }
 
+        .verdict-box {
+            background: linear-gradient(135deg, #2158d0 0%, #1a4a9e 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .verdict-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .verdict-item {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .verdict-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .verdict-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .verdict-value {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        
+        .differences-section {
+            background: #f8f8f8;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .differences-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2158d0;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .difference-item {
+            font-size: 13px;
+            color: #3d4852;
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .difference-item::before {
+            content: '→';
+            margin-right: 8px;
+            color: #2158d0;
+            font-weight: bold;
+        }
+
         /* Scrollbar styling */
         ::-webkit-scrollbar {
             width: 8px;
@@ -872,6 +942,53 @@
                                     `).join('')}
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="verdict-box">
+                            <div class="verdict-title">🎯 Quick Verdict</div>
+                            
+                            <div class="verdict-item">
+                                <div class="verdict-label">Best Overall</div>
+                                <div class="verdict-value">${selectedToolsData?.name}</div>
+                            </div>
+                            
+                            <div class="verdict-item">
+                                <div class="verdict-label">Best Value</div>
+                                <div class="verdict-value">
+                                    ${selectedToolsData.sort((a, b) => a.priceNum - b.priceNum)?.name}
+                                    (${selectedToolsData.sort((a, b) => a.priceNum - b.priceNum)?.price})
+                                </div>
+                            </div>
+                            
+                            <div class="verdict-item">
+                                <div class="verdict-label">Highest Rating</div>
+                                <div class="verdict-value">
+                                    ${selectedToolsData.sort((a, b) => b.score - a.score)?.name}
+                                    (${selectedToolsData.sort((a, b) => b.score - a.score)?.score}/10)
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Key Differences -->
+                        <div class="differences-section">
+                            <div class="differences-title">Key Differences</div>
+                            ${selectedToolsData.length === 2 ? `
+                                <div class="difference-item">
+                                    Price: ${selectedToolsData?.name} is ${
+                                        selectedToolsData?.priceNum > selectedToolsData?.priceNum 
+                                        ? `${Math.round(((selectedToolsData?.priceNum - selectedToolsData?.priceNum) / selectedToolsData?.priceNum * 100))}% more expensive`
+                                        : `${Math.round(((selectedToolsData?.priceNum - selectedToolsData?.priceNum) / selectedToolsData?.priceNum * 100))}% cheaper`
+                                    }
+                                </div>
+                                <div class="difference-item">
+                                    Rating: ${selectedToolsData?.score > selectedToolsData?.score ? selectedToolsData?.name : selectedToolsData?.name} scores higher (${Math.max(selectedToolsData?.score, selectedToolsData?.score)}/10)
+                                </div>
+                            ` : ''}
+                        </div>
+    
+                        <!-- CTA to Blog -->
+                        <div style="background: white; border: 1px solid #d5d2c5; padding: 16px; border-radius: 8px; text-align: center; margin-top: 20px;">
+                            <p style="margin: 0 0 12px 0; font-size: 14px; color: #626c71;">Want a detailed comparison?</p>
+                            <a href="blog/slack-vs-teams.html" class="btn btn-primary">Read Full Article →</a>
                         </div>
                     </div>
                 </div>
