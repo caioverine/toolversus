@@ -992,28 +992,22 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="verdict-box">
-                            <div class="verdict-title">🎯 Quick Verdict</div>
+                        <div style="background: linear-gradient(135deg, #2158d0 0%, #1a4a9e 100%); color: white; padding: 24px; margin: 20px; border-radius: 12px;">
+                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">🎯 Quick Verdict</div>
                             
-                            <div class="verdict-item">
-                                <div class="verdict-label">Best Overall</div>
-                                <div class="verdict-value">${selectedToolsData?.name}</div>
+                            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                                <div style="font-size: 12px; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;">Best Overall</div>
+                                <div style="font-size: 14px; font-weight: 600; margin-top: 4px;">${selectedToolsData.reduce((prev, current) => (prev.score > current.score) ? prev : current).name}</div>
                             </div>
                             
-                            <div class="verdict-item">
-                                <div class="verdict-label">Best Value</div>
-                                <div class="verdict-value">
-                                    ${selectedToolsData.sort((a, b) => a.priceNum - b.priceNum)?.name}
-                                    (${selectedToolsData.sort((a, b) => a.priceNum - b.priceNum)?.price})
-                                </div>
+                            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                                <div style="font-size: 12px; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;">Best Value</div>
+                                <div style="font-size: 14px; font-weight: 600; margin-top: 4px;">${selectedToolsData.reduce((prev, current) => (prev.priceNum < current.priceNum) ? prev : current).name} (${selectedToolsData.reduce((prev, current) => (prev.priceNum < current.priceNum) ? prev : current).price})</div>
                             </div>
                             
-                            <div class="verdict-item">
-                                <div class="verdict-label">Highest Rating</div>
-                                <div class="verdict-value">
-                                    ${selectedToolsData.sort((a, b) => b.score - a.score)?.name}
-                                    (${selectedToolsData.sort((a, b) => b.score - a.score)?.score}/10)
-                                </div>
+                            <div style="margin-bottom: 0; padding-bottom: 0;">
+                                <div style="font-size: 12px; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;">Highest Rating</div>
+                                <div style="font-size: 14px; font-weight: 600; margin-top: 4px;">${selectedToolsData.reduce((prev, current) => (prev.score > current.score) ? prev : current).name} (${selectedToolsData.reduce((prev, current) => (prev.score > current.score) ? prev : current).score}/10)</div>
                             </div>
                         </div>
     
