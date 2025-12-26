@@ -1109,14 +1109,6 @@
                 searchInput.addEventListener('input', (e) => {
                     state.searchTerm = e.target.value;
                     render();
-                    
-                    setTimeout(() => {
-                        const newInput = document.getElementById('searchInput');
-                        if (newInput) {
-                            newInput.value = state.searchTerm;
-                            newInput.focus();
-                        }
-                    }, 0);
                 });
             }
         }
