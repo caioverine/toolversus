@@ -706,7 +706,7 @@
         let state = {
             selectedTools: [1, 2, 3, 4],
             selectedCategory: 'All',
-            searchQuery: '',
+            searchTerm: '',
             sortBy: 'name',
             visibleFeatures: allFeatures
         };
@@ -746,7 +746,7 @@
         }
 
         function setSearchQuery(query) {
-            state.searchQuery = query.toLowerCase();
+            state.searchTerm = query.toLowerCase();
             render();
         }
 
@@ -759,10 +759,10 @@
             }
 
             // Search filter
-            if (state.searchQuery) {
+            if (state.searchTerm) {
                 filtered = filtered.filter(tool => 
-                    tool.name.toLowerCase().includes(state.searchQuery) ||
-                    tool.category.toLowerCase().includes(state.searchQuery)
+                    tool.name.toLowerCase().includes(state.searchTerm) ||
+                    tool.category.toLowerCase().includes(state.searchTerm)
                 );
             }
 
