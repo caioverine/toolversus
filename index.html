@@ -713,8 +713,20 @@
 
         // ==================== UTILITIES ====================
         function handleSearch(value) {
+            const input = document.getElementById('searchInput');
+            const cursorPos = input ? input.selectionStart : 0;
+
             state.searchTerm = value;
             render();
+
+            // Restaurar foco e cursor após render
+            setTimeout(() => {
+                const newInput = document.getElementById('searchInput');
+                if (newInput) {
+                    newInput.focus();
+                    newInput.setSelectionRange(cursorPos, cursorPos);
+                }
+            }, 0);
         }
         function getScoreColor(score) {
             if (score >= 9) return 'score-9';
